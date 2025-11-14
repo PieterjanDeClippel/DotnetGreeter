@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Greet Miss Diane 3 times": {
+      "commandName": "Project",
+      "commandLineArgs": "greet Diane 3"
+    },
+    "Shout at Mister Jones": {
+      "commandName": "Project",
+      "commandLineArgs": "greet MisterJones 1 -u"
+    },
+    "Shout 5 times at Jack": {
+      "commandName": "Project",
+      "commandLineArgs": "greet Jack 5 -u"
+    }
+  }
+}
