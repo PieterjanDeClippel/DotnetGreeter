@@ -11,6 +11,10 @@
     "Shout 5 times at Jack": {
       "commandName": "Project",
       "commandLineArgs": "greet Jack 5 -u"
+    },
+    "Say goodbye to Alice": {
+      "commandName": "Project",
+      "commandLineArgs": "greet farewell Alice --meet-again \"next week\""
     }
   }
 }
