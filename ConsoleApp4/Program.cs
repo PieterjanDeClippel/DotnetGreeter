@@ -1,38 +1,51 @@
-﻿using System.CommandLine;
+﻿using Demo;
+using Microsoft.Extensions.Hosting;
+using MintPlayer.CliGenerator.Attributes;
 
-var nameArgument = new Argument<string>("name") { Description = "Name of the person to greet" };
-var timesArgument = new Argument<int>("times") { Description = "Number of times to greet" };
-var upperOption = new Option<bool>("upper", ["--uppercase", "-u"]) { Description = "Output in uppercase" };
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddGreetCommand();
+var app = builder.Build();
+var exitCode = await app.InvokeGreetCommandAsync(args);
+return exitCode;
 
-// demo greet <name> <times> -u
-var greetCommand = new Command("greet", "Prints a greeting")
+
+namespace Demo
 {
-    nameArgument,
-    timesArgument,
-    upperOption
-};
+    [CliRootCommand(Name = "demo", Description = "Demonstrates the CLI command generator")]
+    public partial class GreetCommand : ICliCommand
+    {
+        public Task<int> Execute(CancellationToken cancellationToken)
+        {
+            Console.WriteLine("Use this command to greet someone");
+            return Task.FromResult(0);
+        }
 
-greetCommand.SetAction(async (parsed) =>
-{
-    var name = parsed.GetRequiredValue(nameArgument);
-    var times = parsed.GetValue(timesArgument);
-    var uppercase = parsed.GetValue(upperOption);
+        [CliCommand("greet", Description = "Greets a person")]
+        public partial class Greet : ICliCommand
+        {
+            public Task<int> Execute(CancellationToken cancellationToken)
+            {
+                if (Verbose)
+                    Console.WriteLine("Running demo command in verbose mode");
 
-    var message = $"Hello, {name}!";
-    if (uppercase)
-        message = message.ToUpperInvariant();
+                var message = $"Hello, {Name}!";
+                for (var i = 0; i < Times; i++)
+                    Console.WriteLine(Uppercase ? message.ToUpperInvariant() : message);
 
-    for (int i = 0; i < times; i++)
-        Console.WriteLine(message);
+                return Task.FromResult(0);
+            }
 
-    return 0;
-});
+            [CliArgument(0, Name = "name", Description = "Name of the person to greet")]
+            public string Name { get; set; }
 
-var rootCommand = new RootCommand("Demo CLI")
-{
-    greetCommand
-};
+            [CliArgument(1, Name = "times", Description = "Number of times to greet")]
+            public int Times { get; set; }
 
-var app = rootCommand.Parse(args);
+            [CliOption("--uppercase", "-u", Description = "Output in uppercase")]
+            public bool Uppercase { get; set; }
 
-return await app.InvokeAsync();
+            [CliOption("--verbose", "-v", Description = "Enable verbose output")]
+            public bool Verbose { get; set; }
+        }
+    }
+}
