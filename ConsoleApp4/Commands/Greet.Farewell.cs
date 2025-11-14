@@ -1,4 +1,5 @@
 ﻿using MintPlayer.CliGenerator.Attributes;
+using MintPlayer.SourceGenerators.Attributes;
 
 namespace Demo;
 
@@ -6,15 +7,13 @@ namespace Demo;
 [CliParentCommand(typeof(Greet))]
 public partial class Farewell : ICliCommand
 {
-    public Task<int> Execute(CancellationToken cancellationToken)
+    [Inject] private readonly IDemoService demoService;
+
+    public async Task<int> Execute(CancellationToken cancellationToken)
     {
-        var farewellMessage = $"Goodbye, {Name}!";
-        if (!string.IsNullOrEmpty(MeetAgain))
-        {
-            farewellMessage += $" See you again {MeetAgain}.";
-        }
+        var farewellMessage = await demoService.GetGoodbyeMessageFor(Name, MeetAgain);
         Console.WriteLine(farewellMessage);
-        return Task.FromResult(0);
+        return 0;
     }
 
     [CliArgument(0, Name = "name", Description = "Name of the person to bid farewell")]

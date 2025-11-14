@@ -1,9 +1,10 @@
-﻿using Demo;
+﻿using ConsoleApp4;
+using Demo;
 using Microsoft.Extensions.Hosting;
 using MintPlayer.CliGenerator.Attributes;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddGreetCommand();
+builder.Services.AddGreetCommand().AddDemoServices();
 var app = builder.Build();
 var exitCode = await app.InvokeGreetCommandAsync(args);
 return exitCode;
