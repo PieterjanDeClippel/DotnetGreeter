@@ -16,4 +16,11 @@
 		<PackageReference Include="System.CommandLine" Version="2.0.0" />
 	</ItemGroup>
 
+	<!-- Group files -->
+	<ItemGroup>
+		<Compile Update="$(MSBuildProjectDirectory)\**\*.*.cs">
+			<DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace(%(Filename), '(?:.(?![.]))+$', %(Extension)))</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	
 </Project>
